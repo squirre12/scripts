@@ -1,0 +1,86 @@
+// ==UserScript==
+// @name         atomichub claimer
+// @namespace    http://tampermonkey.net/
+// @version      1.02
+// @description  try to take over the world!
+// @author       aden
+// @match        http://*/*
+// @match        https://*/*
+// @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
+// @grant        none
+// ==/UserScript==
+
+(function() {
+    'use strict';
+
+    function addGlobalStyle(css) {
+        var head, style;
+        head = document.getElementsByTagName('head')[0];
+        if (!head) {
+            return;
+        }
+        style = document.createElement('style');
+        style.type = 'text/css';
+        style.innerHTML = css;
+        head.appendChild(style);
+    }
+
+    addGlobalStyle('button.true { background: green; } button.false { background: red; }');
+    var StartClaim = function() {
+        var dis = document.getElementById('activate-claim').className;
+        if (dis == 'true') {
+            document.getElementById('activate-claim').className = 'false';
+        } else {
+            document.getElementById('activate-claim').className = 'true';
+        }
+    };
+
+    var createdBut = document.createElement('button');
+    createdBut.innerHTML = 'Claim stonks';
+    createdBut.id = 'activate-claim';
+    createdBut.style.position = "fixed";
+    createdBut.style.left = "50px";
+    createdBut.style.top = "50px";
+    createdBut.style.zIndex = "99999";
+    createdBut.style.height = "50px";
+    document.documentElement.getElementsByTagName("body")[0].insertAdjacentHTML('afterEnd', createdBut.outerHTML);
+    document.getElementById('activate-claim').className = 'false';
+    document.getElementById('activate-claim').onclick = StartClaim;
+
+    var el = document.documentElement.getElementsByTagName("body")[0];
+    var el2 = el.querySelector('#rc-anchor-container');
+    if (el2) {
+        el2.style.background = 'yellow';
+        el2.click();
+    }
+    var claim2fun = function() {
+        var claim2 = document.querySelector('button[data-testid="drop-confirm-modal-confirm-button"]:not(:disabled)');
+        if (claim2) {
+            claim2.click();
+            console.log('click2');
+            setTimeout(claim2fun, 10);
+        }
+        else {
+        setTimeout(claim2fun, 10)
+        }
+    }
+
+    var recfun = function() {
+        var b = document.querySelector('#activate-claim');
+        if (b.className == 'true') {
+            var claimbtn = document.querySelector('button[data-testid="buy-drop-page-action-button"]:not(:disabled)');
+            if (claimbtn) {
+                claimbtn.click();
+                console.log('click1')
+                setTimeout(claim2fun, 10);
+            } else {
+                setTimeout(recfun, 50);
+
+            }
+        } else {
+            setTimeout(recfun, 50);
+        }
+    }
+
+    setTimeout(recfun, 50);
+})();
